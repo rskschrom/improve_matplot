@@ -3,4 +3,4 @@ Contains a single module of functions that improve the quality of matplotlib.pyp
 
 # Installation
 
-`python setup.py install --user'
+`python setup.py install --user`
