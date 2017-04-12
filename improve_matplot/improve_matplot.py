@@ -4,16 +4,27 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # get scaled font sizes relative to figure size
-def getFontSizes(fig):
+def getFontSizes(fig, txscale, lbscale):
     fpix = fig.get_size_inches()*fig.dpi
-    txfontsize = fpix[1]/105.56
-    lbfontsize = fpix[1]/135.71
+
+    txfontsize = fpix[1]/txscale
+    lbfontsize = fpix[1]/lbscale
     return txfontsize, lbfontsize
 
 # make axis look tolerable
 def beautifyAx(fig, ax, xmin, xmax, ymin, ymax,
                plt_title, xlabel, ylabel, **kwargs):
-    txfontsize, lbfontsize = getFontSizes(fig)
+
+    txscale = 105.56
+    lbscale = 135.71
+
+    # use kwargs for txscale and lbscale
+    if 'txscale' in kwargs:
+        txscale = kwargs['txscale']
+    if 'lbscale' in kwargs:
+        lbscale = kwargs['lbscale']
+
+    txfontsize, lbfontsize = getFontSizes(fig, txscale, lbscale)
     ax.set_xlim([xmin, xmax])
     ax.set_ylim([ymin, ymax])
     ax.set_title(plt_title, x=0.0, y=1.02, horizontalalignment='left', fontsize=txfontsize)
@@ -36,8 +47,14 @@ def beautifyAx(fig, ax, xmin, xmax, ymin, ymax,
     return
 
 # make colorbar look tolerable
-def beautifyCbar(fig, cb, cb_label):
-    txfontsize, lbfontsize = getFontSizes(fig)
+def beautifyCbar(fig, cb, cb_label, **kwargs):
+    # use kwargs for txscale and lbscale
+    if 'txscale' in kwargs:
+        txscale = kwargs['txscale']
+    if 'lbscale' in kwargs:
+        lbscale = kwargs['lbscale']
+
+    txfontsize, lbfontsize = getFontSizes(fig, txscale, lbscale)
     cb.set_label(cb_label, fontsize=txfontsize)
     cb_la = [ti.get_text().replace('$', '') for ti in cb.ax.get_yticklabels()]
     cb.ax.set_yticklabels(cb_la, fontsize=lbfontsize)
@@ -62,4 +79,3 @@ def adjustFonts(mpl):
     mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
     mpl.rc('text', usetex=True)
     return
-
