@@ -79,12 +79,10 @@ class Panel:
         if 'numytick' in kwargs:
             numytick = kwargs['numytick']
 
-        xtickstep = int((self.xbounds[1]-self.xbounds[0])/numxtick)
-        ytickstep = int((self.ybounds[1]-self.ybounds[0])/numytick)
-        xticks = np.arange(self.xbounds[0], self.xbounds[1], xtickstep)
-        yticks = np.arange(self.ybounds[0], self.ybounds[1], ytickstep)
+        xticks = np.linspace(self.xbounds[0], self.xbounds[1], numxtick+1)
+        yticks = np.linspace(self.ybounds[0], self.ybounds[1], numytick+1)
+        print xticks
 
         # draw tickmarks
-        print dir(self.plot)
         self.plot.xticks(xticks)
         self.plot.yticks(yticks)
