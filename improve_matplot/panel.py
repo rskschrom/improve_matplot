@@ -42,10 +42,10 @@ class Panel:
         return txfontsize, lbfontsize
 
     # make axis look tolerable
-    def beautify_ax(self, plt_title, xlabel, ylabel):
+    def beautify_axis(self, plt_title, xlabel, ylabel):
         txfontsize, lbfontsize = self.get_font_sizes()
-        self.axis.set_xlim([xmin, xmax])
-        self.axis.set_ylim([ymin, ymax])
+        self.axis.set_xlim(self.xbounds)
+        self.axis.set_ylim(self.ybounds)
         self.axis.set_title(plt_title, x=0.0, y=1.02,
                             horizontalalignment='left',
                             fontsize=txfontsize)
@@ -63,14 +63,14 @@ class Panel:
         self.axis.grid(color='k', linestyle=(0.5, [2,6]), linewidth=1.)
 
     # make colorbar look tolerable
-    def beautifyCbar(self, cb_label):
+    def beautify_colorbar(self, cb_label):
         txfontsize, lbfontsize = self.get_font_sizes()
         self.colorbar.set_label(cb_label, fontsize=txfontsize)
         cb_la = [ti.get_text().replace('$', '') for ti in self.colorbar.ax.get_yticklabels()]
         self.colorbar.ax.set_yticklabels(cb_la, fontsize=lbfontsize)
 
     # make custom tickmarks
-    def makeTicks(self, **kwargs):
+    def make_ticks(self, **kwargs):
         # create tickmark arrays
         numxtick = 4
         numytick = 4
@@ -79,17 +79,12 @@ class Panel:
         if 'numytick' in kwargs:
             numytick = kwargs['numytick']
 
-        xtickstep = int((xmax-xmin)/numxtick)
-        ytickstep = int((ymax-ymin)/numytick)
-        xticks = np.arange(xmin, xmax, xtickstep)
-        yticks = np.arange(ymin, ymax, ytickstep)
+        xtickstep = int((self.xbounds[1]-self.xbounds[0])/numxtick)
+        ytickstep = int((self.ybounds[1]-self.ybounds[0])/numytick)
+        xticks = np.arange(self.xbounds[0], self.xbounds[1], xtickstep)
+        yticks = np.arange(self.ybounds[0], self.ybounds[1], ytickstep)
 
         # draw tickmarks
+        print dir(self.plot)
         self.plot.xticks(xticks)
         self.plot.yticks(yticks)
-
-    # use helvetica instead of default font
-    def adjustFonts(mpl):
-        mpl.rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-        mpl.rc('text', usetex=True)
-
