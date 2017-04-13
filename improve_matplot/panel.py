@@ -12,8 +12,8 @@ class Panel:
         self.colorbar = cb
         self.xbounds = []
         self.ybounds = []
-        self.txscale = 16./800.
-        self.lbscale = 11./800.
+        self.txscale = 18./800.
+        self.lbscale = 14./800.
         self.panel_ind = 3
 
     # set methods
@@ -37,10 +37,8 @@ class Panel:
     def get_font_sizes(self):
         fpix = self.figure.get_size_inches()*self.figure.dpi
 
-        print fpix
         txfontsize = fpix[0]*self.txscale
         lbfontsize = fpix[0]*self.lbscale
-        print txfontsize, lbfontsize
         return txfontsize, lbfontsize
 
     # make axis look tolerable
