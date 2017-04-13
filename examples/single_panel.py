@@ -31,9 +31,8 @@ cb = plt.colorbar()
 panel = Panel(fig, ax, plt, cb)
 panel.set_xbounds([minx, maxx])
 panel.set_ybounds([miny, maxy])
-panel.make_ticks()
-panel.beautify_axis('Panel title', 'X', 'Y')
-panel.beautify_colorbar('Colorbar label')
+panel.beautify_panel(plt_title='Panel title', xlabel='X',
+                     ylabel='Y', cblabel='Colorbar label')
 
 # save plot as image
 plt.savefig('single_panel.png')

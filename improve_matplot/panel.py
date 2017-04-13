@@ -70,19 +70,41 @@ class Panel:
         self.colorbar.ax.set_yticklabels(cb_la, fontsize=lbfontsize)
 
     # make custom tickmarks
-    def make_ticks(self, **kwargs):
+    def make_ticks(self, numxtick, numytick):
         # create tickmark arrays
-        numxtick = 4
-        numytick = 4
-        if 'numxtick' in kwargs:
-            numxtick = kwargs['numxtick']
-        if 'numytick' in kwargs:
-            numytick = kwargs['numytick']
-
         xticks = np.linspace(self.xbounds[0], self.xbounds[1], numxtick+1)
         yticks = np.linspace(self.ybounds[0], self.ybounds[1], numytick+1)
-        print xticks
 
         # draw tickmarks
         self.plot.xticks(xticks)
         self.plot.yticks(yticks)
+
+    # method to tie individual style methods together
+    def beautify_panel(self, **kwargs):
+        # set defaults
+        numxtick = 4
+        numytick = 4
+        plt_title = ''
+        xlabel = ''
+        ylabel = ''
+        cblabel = ''
+
+        # check for different values in kwargs
+        if 'numxtick' in kwargs:
+            numxtick = kwargs['numxtick']
+        if 'numytick' in kwargs:
+            numytick = kwargs['numytick']
+        if 'plt_title' in kwargs:
+            plt_title = kwargs['plt_title']
+        if 'xlabel' in kwargs:
+            xlabel = kwargs['xlabel']
+        if 'ylabel' in kwargs:
+            ylabel = kwargs['ylabel']
+        if 'cblabel' in kwargs:
+            cblabel = kwargs['cblabel']
+
+        # call functions to improve panel
+        self.make_ticks(numxtick, numytick)
+        self.beautify_axis(plt_title, xlabel, ylabel)
+        self.beautify_colorbar(cblabel)
+        self.plot.tight_layout()
