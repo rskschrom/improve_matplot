@@ -12,8 +12,8 @@ class Panel:
         self.colorbar = cb
         self.xbounds = []
         self.ybounds = []
-        self.txscale = 18./800.
-        self.lbscale = 14./800.
+        self.txscale = 18./1000.
+        self.lbscale = 14./1000.
         self.panel_ind = 3
 
     # set methods
@@ -36,13 +36,14 @@ class Panel:
     # get scaled font sizes relative to figure size
     def get_font_sizes(self):
         fpix = self.figure.get_size_inches()*self.figure.dpi
+        lpix = np.min(fpix)
 
-        txfontsize = fpix[0]*self.txscale
-        lbfontsize = fpix[0]*self.lbscale
+        txfontsize = lpix*self.txscale
+        lbfontsize = lpix*self.lbscale
         return txfontsize, lbfontsize
 
     # make axis look tolerable
-    def beautify_axis(self, plt_title, xlabel, ylabel):
+    def beautify_axis(self, plt_title, xlabel, ylabel, nogrid):
         txfontsize, lbfontsize = self.get_font_sizes()
         self.axis.set_xlim(self.xbounds)
         self.axis.set_ylim(self.ybounds)
@@ -58,9 +59,14 @@ class Panel:
 
         # change tick mark sizes and fonts
         self.axis.tick_params(axis='both', which='major', labelsize=lbfontsize, pad=20)
-        self.axis.set_xticklabels(self.axis.get_xticks())
-        self.axis.set_yticklabels(self.axis.get_yticks())
+        xtlabels = ['{:.2f}'.format(xtl) for xtl in self.axis.get_xticks()]
+        ytlabels = ['{:.2f}'.format(ytl) for ytl in self.axis.get_yticks()]
+        print xtlabels, ytlabels
+        self.axis.set_xticklabels(xtlabels)
+        self.axis.set_yticklabels(ytlabels)
         self.axis.grid(color='k', linestyle=(0.5, [2,6]), linewidth=1.)
+        if nogrid:
+            self.axis.grid()
 
     # make colorbar look tolerable
     def beautify_colorbar(self, cb_label):
@@ -72,22 +78,23 @@ class Panel:
     # make custom tickmarks
     def make_ticks(self, numxtick, numytick):
         # create tickmark arrays
-        xticks = np.linspace(self.xbounds[0], self.xbounds[1], numxtick+1)
-        yticks = np.linspace(self.ybounds[0], self.ybounds[1], numytick+1)
+        xticks = np.linspace(self.xbounds[0], self.xbounds[1], numxtick)
+        yticks = np.linspace(self.ybounds[0], self.ybounds[1], numytick)
 
         # draw tickmarks
-        self.plot.xticks(xticks)
-        self.plot.yticks(yticks)
+        self.axis.xaxis.set_ticks(xticks)
+        self.axis.yaxis.set_ticks(yticks)
 
     # method to tie individual style methods together
     def beautify_panel(self, **kwargs):
         # set defaults
         numxtick = 4
-        numytick = 4
+        numytick = 5
         plt_title = ''
         xlabel = ''
         ylabel = ''
         cblabel = ''
+        nogrid = False
 
         # check for different values in kwargs
         if 'numxtick' in kwargs:
@@ -102,9 +109,11 @@ class Panel:
             ylabel = kwargs['ylabel']
         if 'cblabel' in kwargs:
             cblabel = kwargs['cblabel']
+        if 'nogrid' in kwargs:
+            nogrid = kwargs['nogrid']
 
         # call functions to improve panel
         self.make_ticks(numxtick, numytick)
-        self.beautify_axis(plt_title, xlabel, ylabel)
+        self.beautify_axis(plt_title, xlabel, ylabel, nogrid)
         self.beautify_colorbar(cblabel)
         self.plot.tight_layout()
